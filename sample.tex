@@ -1,0 +1,233 @@
+%%%%%%%% ICML 2023 EXAMPLE LATEX SUBMISSION FILE %%%%%%%%%%%%%%%%%
+
+\documentclass{article}
+
+% Recommended, but optional, packages for figures and better typesetting:
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{booktabs} % for professional tables
+
+% hyperref makes hyperlinks in the resulting PDF.
+% If your build breaks (sometimes temporarily if a hyperlink spans a page)
+% please comment out the following usepackage line and replace
+% \usepackage{icml2023} with \usepackage[nohyperref]{icml2023} above.
+\usepackage{hyperref}
+
+
+% Attempt to make hyperref and algorithmic work together better:
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+% Use the following line for the initial blind version submitted for review:
+% \usepackage{icml2023}
+
+% If accepted, instead use the following line for the camera-ready submission:
+\usepackage[accepted]{icml2023}
+
+% For theorems and such
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+
+% if you use cleveref..
+\usepackage[capitalize,noabbrev]{cleveref}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% THEOREMS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% Todonotes is useful during development; simply uncomment the next line
+%    and comment out the line below the next line to turn off comments
+%\usepackage[disable,textsize=tiny]{todonotes}
+\usepackage[textsize=tiny]{todonotes}
+
+
+% The \icmltitle you define below is probably too long as a header.
+% Therefore, a short form for the running title is supplied here:
+% \icmltitlerunning{Submission and Formatting Instructions for ICML 2023}
+
+\begin{document}
+
+\twocolumn[
+\icmltitle{AutoML-GPT: Large Language Model for AutoML}
+
+% It is OKAY to include author information, even for blind
+% submissions: the style file will automatically remove it for you
+% unless you've provided the [accepted] option to the icml2023
+% package.
+
+% List of affiliations: The first argument should be a (short)
+% identifier you will use later to specify author affiliations
+% Academic affiliations should list Department, University, City, Region, Country
+% Industry affiliations should list Company, City, Region, Country
+
+% You can specify symbols, otherwise they are numbered in order.
+% Ideally, you should not use this facility. Affiliations will be numbered
+% in order of appearance and this is the preferred way.
+% \icmlsetsymbol{equal}{*}
+
+\begin{icmlauthorlist}
+\icmlauthor{Yun-Da Tsai}{NTU}
+\icmlauthor{Yu-Che Tsai}{NTU}
+\icmlauthor{Bo-Wei Huang}{NTU}
+\icmlauthor{Chun-Pai Yang}{NTU}
+\icmlauthor{Shou-De Lin}{NTU}
+%\icmlauthor{}{sch}
+% \icmlauthor{Firstname8 Lastname8}{sch}
+% \icmlauthor{Firstname8 Lastname8}{yyy,comp}
+%\icmlauthor{}{sch}
+%\icmlauthor{}{sch}
+\end{icmlauthorlist}
+
+\icmlaffiliation{NTU}{Department of Computer Science and Information Engineering, National Taiwan University, Taipei, Taiwan}
+% \icmlaffiliation{comp}{Company Name, Location, Country}
+% \icmlaffiliation{sch}{School of ZZZ, Institute of WWW, Location, Country}
+
+\icmlcorrespondingauthor{Yun-Da Tsai}{f08946007@csie.ntu.edu.tw}
+% \icmlcorrespondingauthor{Firstname2 Lastname2}{first2.last2@www.uk}
+
+% You may provide any keywords that you
+% find helpful for describing your paper; these are used to populate
+% the "keywords" metadata in the PDF but will not be shown in the document
+\icmlkeywords{Machine Learning, ICML}
+
+\vskip 0.3in
+]
+
+% this must go after the closing bracket ] following \twocolumn[ ...
+
+% This command actually creates the footnote in the first column
+% listing the affiliations and the copyright notice.
+% The command takes one argument, which is text to display at the start of the footnote.
+% The \icmlEqualContribution command is standard text for equal contribution.
+% Remove it (just {}) if you do not need this facility.
+
+\printAffiliationsAndNotice{}  % leave blank if no need to mention equal contribution
+% \printAffiliationsAndNotice{\icmlEqualContribution} % otherwise use the standard text.
+
+\begin{abstract}
+With the emerging trend of GPT models, we establish a framework, AutoML-GPT, integrates with a comprehensive set of tools and libraries, granting access to a wide range of data preprocessing techniques, feature engineering methods, and model selection algorithms. Users can specify their requirements, constraints, and evaluation metrics through a conversational interface.
+Throughout the process, AutoML-GPT employs advanced techniques for hyperparameter optimization, and model selection, ensuring that the resulting model achieves optimal performance. The system effectively manages the complexity of the machine learning pipeline, guiding users towards the best choices without requiring deep domain knowledge.
+Through our experimental results on diverse datasets, we demonstrate that AutoML-GPT significantly reduces the time and effort required for machine learning tasks. Its ability to leverage the vast knowledge encoded in large language models enables it to provide valuable insights, identify potential pitfalls, and suggest effective solutions to common challenges faced during model training. Demo link: \url{https://youtu.be/QFoQ4pj9OHw}
+\end{abstract}
+
+\section{Introduction}
+Automated Machine Learning (AutoML) has gained significant attention in recent years as a powerful technique for automating various stages of the machine learning workflow. It aims to simplify the model development process by automatically searching, selecting, and optimizing machine learning models without extensive manual intervention. AutoML has the potential to democratize machine learning and make it accessible to a broader audience, including non-experts and domain specialists.
+AutoML encompasses tasks such as data pre-processing, feature engineering, model selection, and hyperparameter tuning. These tasks require expertise, time, and computational resources. To address these challenges, researchers have proposed various approaches and frameworks for AutoML, such as Auto-sklearn~\cite{autosklearn}, Auto-Keras~\cite{autokeras}, and AutoGluon~\cite{autoGluon}. These approaches aim to automate the process of model selection and configuration, making it easier for practitioners to build accurate and efficient machine learning models.
+
+Large language models, such as OpenAI's GPT3~\cite{GPT3} and Google's PaLM~\cite{chowdhery2022palm}, have emerged as powerful tools in natural language processing and understanding. These models have been extensively trained on vast amounts of text data and have demonstrated remarkable capabilities in language understanding, text generation, sentiment analysis, and other language-related tasks. Large language models excel at capturing complex patterns, understanding context, and generating coherent responses.
+The strength of large language models lies in their ability to comprehend and process unstructured textual data effectively. They learn rich semantic representations of language, enabling them to understand the nuances and subtleties present in text. By leveraging pre-trained language models, researchers have achieved significant advancements in various natural language processing tasks, including machine translation, question-answering, and language generation.
+
+While large language models have found success in these specific applications, their comprehensive integration into the AutoML framework is an area that remains relatively unexplored. Existing research has focused on utilizing language models for individual tasks within AutoML, such as data pre-processing, feature engineering. However, the potential of leveraging these models to automate the entire AutoML pipeline, from data preparation to hyperparameter optimization, has not been extensively studied, which becomes the motivation of this work. 
+Large language models exhibit exceptional strengths in AutoML from multiple perspectives. In terms of data understanding, LLMs could be used in data preprocessing by efficiently handling missing values, normalizing or scaling features, and detecting outliers. Additionally, large language models have the ability to conduct correlation analysis, discover causal relationships, and perform feature selection, effectively identifying and eliminating irrelevant or redundant features. Furthermore, these models contribute to the identification of potential models that are well-suited for a given dataset and task, providing valuable guidance in the model selection phase. In this paper, we designed AutoML-GPT, a dual agent system, that is build upon large language models. The agents in the system are both capable of communication, planning and tools using in order to complete complex machine learning tasks. In our experiments, AutoML-GPT showed compatible performance compared to human experts in  11 tabular datasets chosen from recent Kaggle competitions that reflect real modern-day ML applications.
+
+\vspace{-10pt}
+
+
+\section{Large Language Models For AutoML}
+\begin{figure}[t!]
+  \centering
+  \includegraphics[width=1\linewidth]{autoML-GPT.pdf}
+  \caption{Pipeline of AutoML-GPT.}
+  \label{fig:autoML_pipeline}
+  \vspace{-10pt}
+\end{figure}
+To integrate a Large Language Model (LLM) into the AutoML framework, we propose a systematic methodology that involves two agents: the Reasoning agent and the Coding agent as illustrated in Figure~\ref{fig:autoML_pipeline}. The Reasoning agent handles the task of understanding human requests and planning the sequence of tool usage within the AutoML pipeline. It leverages the advanced language comprehension capabilities of the LLM to accurately interpret and understand complex and multiple requests, such as end-to-end training. The Reasoning agent is responsible for planning the sequence of tool usage, combining different tools in an optimal manner to achieve the desired AutoML pipeline. Additionally, it monitors the status of the pipeline, keeping track of completed tasks, such as model selection and dataset loading. This enables the Reasoning agent to efficiently manage the workflow and provide timely updates to the user.
+The Coding agent, on the other hand, is responsible for the implementation of the planned tasks. It starts by reading relevant documentation and modules to gain the necessary knowledge. Using its understanding of programming languages and AutoML tools, the Coding agent generates thoughts and formulates the code required for executing the designated tasks. It implements the code in a structured manner and executes it to carry out the specified actions within the AutoML pipeline. The Coding agent plays a crucial role in translating the reasoning and planning of the Reasoning agent into executable code.
+
+The interaction between the Reasoning and Coding agents is iterative and collaborative. The Reasoning agent receives the execution output from the Coding agent and utilizes it to provide relevant and informative responses to the user. This enables the Reasoning agent to communicate the progress of the AutoML pipeline, reply to user queries, and deliver meaningful insights based on the executed tasks.
+By employing this methodology with the Reasoning and Coding agents, the integration of LLM into the AutoML framework benefits from the reasoning and planning capabilities of the Reasoning agent, as well as the code generation and execution expertise of the Coding agent. This collaborative approach ensures accurate interpretation of user requests, precise planning of tool usage, reliable code implementation, and effective communication with the user, facilitating a seamless and efficient AutoML pipeline.
+
+% \begin{table*}[!bth]
+% \centering
+% \caption{ % Overview of 
+% Summary of the 11 Kaggle competitions used in our benchmark, including: the date of each competition, around how many teams participated, and the number of rows/columns in the provided training data.  
+% The metrics used to evaluate predictive performance in each competition include: root mean squared logarithmic error (RMSLE), coefficient of determination ($R^2$), mean absolute error (MAE), logarithmic loss (log-loss), 
+% area under the Receiver Operating Characteristic curve (AUC), and normalized Gini index (Gini).  
+% }
+% \label{tab:kaggle}
+
+% \begin{tabular}{llllllll}
+% \toprule
+% \textbf{Competition} & \textbf{Task} & \textbf{Metric} & \textbf{Year} & \textbf{Teams} & \textbf{Rows} &  \textbf{Colums}  \\
+% \midrule
+% house-prices-advanced-regression-techniques & regression & RMSLE & current & 5100 & 1460 & 80  \\
+% mercedes-benz-greener-manufacturing & regression & $R^2$ & 2017 & 3800 & 4209 & 377 \\
+%  santander-value-prediction-challenge & regression & RMSLE & 2019 & 4500 & 4459 & 4992  \\
+% allstate-claims-severity & regression & MAE & 2017 & 3000 & 1.8E+5 & 131 \\
+% bnp-paribas-cardif-claims-management & binary & log-loss & 2016  & 2900 & 1.1E+5 & 132 \\ 
+% santander-customer-transaction-prediction & binary & AUC & 2019 & 8800 & 2.2E+5 & 201 \\
+% santander-customer-satisfaction & binary & AUC & 2016 & 5100 & 7.6E+4 & 370 \\
+% porto-seguro-safe-driver-prediction & binary & Gini & 2018 & 5200 & 6.0E+5 & 58 \\
+% ieee-fraud-detection & binary & AUC & 2019 & 6400 & 5.9E+5 & 432 \\
+% walmart-recruiting-trip-type-classification & multi-class & log-loss & 2016 & 1000 & 6.5E+5 & 7  \\
+% otto-group-product-classification-challenge & multi-class & log-loss & 2015 & 3500 & 6.2E+4 & 94\\
+
+% \bottomrule
+% \end{tabular}
+% \end{table*}
+
+
+% \begin{table}[!bth]
+% \centering
+% \caption{ % Overview of 
+% Summary of the performance in rank percentile across 9 Kaggle competitions.
+% }
+% \label{tab:kaggle}
+
+% \begin{tabular}{ll}
+% \toprule
+% \textbf{Competition} & \textbf{PR}  \\
+% \midrule
+% house-prices-advanced-regression-techniques &  77\\
+% mercedes-benz-greener-manufacturing & 89 \\
+% santander-value-prediction-challenge &  3 \\
+% allstate-claims-severity & 34 \\
+% santander-customer-transaction-prediction & 27 \\
+% santander-customer-satisfaction & 32 \\
+% porto-seguro-safe-driver-prediction & 59 \\
+% % ieee-fraud-detection &  99 \\
+% bnp-paribas-cardif-claims-management & 22 \\ 
+% % walmart-recruiting-trip-type-classification & 99 \\
+% otto-group-product-classification-challenge & 66 \\
+
+% \bottomrule
+% \end{tabular}
+% \end{table}
+
+
+\begin{figure}[t!]
+  \centering
+  \includegraphics[width=1\linewidth]{LegendPlotStar-pdf.png}
+  \includegraphics[width=1\linewidth]{KaggleAbsolutePercentilePlot_4hStar.pdf}
+  \vspace{-20pt}
+  \caption{Summary of the performance in rank percentile on Leaderboard across 9 Kaggle competitions compared to other well known automl tools.}
+  \label{fig:kaggle}
+  \vspace{-10pt}
+\end{figure}
+
+\vspace{-10pt}
+\section{Experimental Results}
+For the experiment, we opted for the widely used Kaggle benchmark, which is prominent in automl research literature. We selected 9 tabular datasets from recent Kaggle competitions to represent contemporary applications. These competitions encompass a range of tasks, including regression and (binary/multiclass) classification. The competition organizers have tailored different metrics to evaluate the predictive performance based on the specific problem at hand.
+Every dataset is processed by AutoML-GPT in a four instruction sequence though the LLM (1) Explore the dataset (2) Process the dataset (3) Select the model (4) Fine tune the parameters. In our experiment, we will be using single model without any ensemble technique. The results reported in Figure~\ref{fig:kaggle} are the rank percentile on the kaggle competition leader board. Note that each of the result is a one-shot submission to kaggle without any fine-tune after local development.
+
+\bibliography{example_paper}
+\bibliographystyle{icml2023}
+
+
+
+
+
+\end{document}
+
