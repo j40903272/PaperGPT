@@ -1,3 +1,4 @@
+import os
 import gradio as gr
 from suggest import Suggest
 from edit import Editor
@@ -10,7 +11,7 @@ configure_logging()
 with gr.Blocks() as demo:
     
     title = gr.Button("PaperGPT", interactive=False)
-    key = gr.Textbox(label="openai_key")
+    key = gr.Textbox(label="openai_key", value=os.environ.get('OPENAI_API_KEY'))
     
     with gr.Tab("Edit"):
         
@@ -63,4 +64,5 @@ with gr.Blocks() as demo:
             i.click(select, inputs=[i], outputs=[thought, action, original, improved])
             
 
-    demo.launch(server_name="0.0.0.0", server_port=7653, share=True, enable_queue=True)
+    # demo.launch(server_name="0.0.0.0", server_port=7653, share=True, enable_queue=True)
+    demo.launch(enable_queue=True)
