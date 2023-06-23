@@ -64,5 +64,5 @@ with gr.Blocks() as demo:
             i.click(select, inputs=[i], outputs=[thought, action, original, improved])
             
 
-    # demo.launch(server_name="0.0.0.0", server_port=7653, share=True, enable_queue=True)
-    demo.launch(enable_queue=True)
+    demo.launch(server_name="0.0.0.0", server_port=7653, share=True, enable_queue=True)
+    # demo.launch(enable_queue=True)
