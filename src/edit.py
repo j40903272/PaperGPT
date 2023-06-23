@@ -11,7 +11,7 @@ class Editor():
     def __init__(self, model: str = "gpt-3.5-turbo"):
         self.encoder = tiktoken.encoding_for_model(model)
         self.model = model
-        with open("../sample/sample_abstract.tex", "r") as f:
+        with open("./sample/sample_abstract.tex", "r") as f:
             self.sample_content = f.read()
             
     def split_chunk(self, text, chunk_size: int = 2000) -> List[str]:

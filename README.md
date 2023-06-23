@@ -1,3 +1,9 @@
+---
+title: papergpt
+app_file: src/app.py
+sdk: gradio
+sdk_version: 3.35.2
+---
 # PaperGPT
 Paper editor tool
 
