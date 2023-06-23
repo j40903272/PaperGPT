@@ -1,5 +1,5 @@
 ---
-title: papergpt
+title: PaperGPT
 app_file: src/app.py
 sdk: gradio
 sdk_version: 3.35.2
