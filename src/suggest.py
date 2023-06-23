@@ -52,7 +52,7 @@ class Suggest():
         self.max_ideas = max_ideas
         self.encoder = tiktoken.encoding_for_model(model)
         self.model = model
-        with open("./sample/sample.tex", "r") as f:
+        with open("../sample/sample.tex", "r") as f:
             self.sample_content = f.read()
             
     def split_chunk(self, latex_whole_document: str, chunk_size: int = 2000, retry: int = 5) -> List[Document]:
