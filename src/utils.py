@@ -2,6 +2,7 @@ import json
 import requests
 import tiktoken
 import logging
+from difflib import Differ
 
 
 def json_validator(
@@ -44,7 +45,8 @@ def json_validator(
                 text = response.json()['choices'][0]['text']
                 break
             
-            raise Exception(response.json()['error'])
+            if response.status_code != 200:
+                raise Exception(response.json()['error'])
             
     return text
 
@@ -77,3 +79,11 @@ def fetch_chat(
         return result
     
     return response.json()["error"]
+
+
+def diff_texts(text1: str, text2: str) -> list:
+    d = Differ()
+    return [
+        (token[2:], token[0] if token[0] != " " else None)
+        for token in d.compare(text1, text2)
+    ]

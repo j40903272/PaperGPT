@@ -52,6 +52,7 @@ class Suggest():
         self.max_ideas = max_ideas
         self.encoder = tiktoken.encoding_for_model(model)
         self.model = model
+        self.idea_list = []
         with open("./sample/sample.tex", "r") as f:
             self.sample_content = f.read()
             
@@ -125,7 +126,11 @@ class Suggest():
                 if len(ideas) >= self.max_ideas:
                     break
             else:
-                raise gr.Error(idea)
+                # raise gr.Error(idea)
+                continue
+
+        if not ideas:
+            raise gr.Error('No suggestions generated.')
 
         logging.info('complete analysis')
         return ideas
@@ -149,8 +154,8 @@ class Suggest():
             raise gr.Error("Please provide openai key !")
         
         try:
-            global idea_list
             idea_list = self.analyze(txt, openai_key, progress)
+            self.idea_list = idea_list
             k = min(len(idea_list), self.max_ideas)
 
             idea_buttons = [
@@ -165,7 +170,7 @@ class Suggest():
                 gr.Textbox.update(value="", label="thought", visible=True),
                 gr.Textbox.update(value="", label="action", visible=True),
                 gr.Textbox.update(value="", label="original", visible=True, max_lines=5, lines=5),
-                gr.Textbox.update(value="", label="improved", visible=True, max_lines=5, lines=5)
+                gr.Textbox.update(value="", label="improved", visible=True, max_lines=5, lines=5),
             ]
 
             return [
