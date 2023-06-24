@@ -18,33 +18,33 @@ def json_validator(
             return json.loads(text)
         except Exception:
             
-            try:
-                prompt = f"Modify the following into a valid json format:\n{text}"
-                prompt_token_length = len(encoder.encode(prompt))
+            
+            prompt = f"Modify the following into a valid json format:\n{text}"
+            prompt_token_length = len(encoder.encode(prompt))
 
-                data = {
-                    "model": model,
-                    "prompt": prompt,
-                    "max_tokens": 4097 - prompt_token_length - 64
-                }
-                headers = {
-                    "Content-Type": "application/json",
-                    "Authorization": f"Bearer {openai_key}"
-                }
-                for _ in range(retry):
-                    response = requests.post(
-                        'https://api.openai.com/v1/completions',
-                        json=data,
-                        headers=headers,
-                        timeout=300
-                    )
-                    if response.status_code != 200:
-                        logging.warning(f'fetch openai chat retry: {response.text}')
-                        continue
-                    text = response.json()['choices'][0]['text']
-                    break
-            except Exception:
-                return response.json()['error']
+            data = {
+                "model": model,
+                "prompt": prompt,
+                "max_tokens": 4097 - prompt_token_length - 64
+            }
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {openai_key}"
+            }
+            for _ in range(retry):
+                response = requests.post(
+                    'https://api.openai.com/v1/completions',
+                    json=data,
+                    headers=headers,
+                    timeout=300
+                )
+                if response.status_code != 200:
+                    logging.warning(f'fetch openai chat retry: {response.text}')
+                    continue
+                text = response.json()['choices'][0]['text']
+                break
+            
+            raise Exception(response.json()['error'])
             
     return text
 
