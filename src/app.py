@@ -72,6 +72,9 @@ with gr.Blocks() as demo:
             btn.click(handler.generate, inputs=[txt_in, key], outputs=[sug, btn, thought, action, original, improved] + textboxes)
             for i in textboxes:
                 i.click(select, inputs=[i], outputs=[thought, action, original, improved, diff])
+                
+        with gr.Tab("Review"):
+            pass
             
     with gr.Row():
         with gr.Tab("Issue"):
