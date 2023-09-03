@@ -11,7 +11,6 @@ def configure_logging(logging_level: str = "INFO"):
     logging.basicConfig(
         level=numeric_level,
         datefmt="%Y-%m-%d %H:%M:%S",
-        format=
-        "[%(asctime)s] [%(process)s] [%(levelname)s] [%(module)s]: #%(funcName)s @%(lineno)d: %(message)s",
+        format="[%(asctime)s] [%(process)s] [%(levelname)s] [%(module)s]: #%(funcName)s @%(lineno)d: %(message)s",
     )
     logging.info(f"Logging level: {logging_level}")

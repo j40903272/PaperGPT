@@ -22,7 +22,6 @@ class LatexTextSplitter(RecursiveCharacterTextSplitter):
             "\section{",
             "\subsection{",
             "\subsubsection{",
-
             # Now split by environments
             "\begin{"
             # "\n\\begin{enumerate}",
@@ -33,21 +32,18 @@ class LatexTextSplitter(RecursiveCharacterTextSplitter):
             # "\n\\begin{quotation}",
             # "\n\\begin{verse}",
             # "\n\\begin{verbatim}",
-
             ## Now split by math environments
             # "\n\\begin{align}",
             # "$$",
             # "$",
-
             # Now split by the normal type of lines
             " ",
             "",
         ]
         super().__init__(separators=separators, **kwargs)
-        
 
-class Suggest():
-    
+
+class Suggest:
     def __init__(self, max_ideas: int, model: str = "gpt-3.5-turbo"):
         self.max_ideas = max_ideas
         self.encoder = tiktoken.encoding_for_model(model)
@@ -55,9 +51,10 @@ class Suggest():
         self.idea_list = []
         with open("./sample/sample.tex", "r") as f:
             self.sample_content = f.read()
-            
-    def split_chunk(self, latex_whole_document: str, chunk_size: int = 2000, retry: int = 5) -> List[Document]:
-        
+
+    def split_chunk(
+        self, latex_whole_document: str, chunk_size: int = 2000, retry: int = 5
+    ) -> List[Document]:
         chunk_size = min(chunk_size, len(latex_whole_document))
 
         for _ in range(retry):
@@ -73,8 +70,9 @@ class Suggest():
 
         raise Exception("Latex document split check failed.")
 
-    def analyze(self, latex_whole_document: str, openai_key: str, progress: gr.Progress):
-
+    def analyze(
+        self, latex_whole_document: str, openai_key: str, progress: gr.Progress
+    ):
         logging.info("start analysis")
         docs = self.split_chunk(latex_whole_document)
         progress(0.05)
@@ -98,7 +96,6 @@ class Suggest():
 
         ideas = []
         for doc in progress.tqdm(docs):
-
             prompt = f"""
             I'm a computer science student.
             You are my editor.
@@ -130,52 +127,61 @@ class Suggest():
                 continue
 
         if not ideas:
-            raise gr.Error('No suggestions generated.')
+            raise gr.Error("No suggestions generated.")
 
-        logging.info('complete analysis')
+        logging.info("complete analysis")
         return ideas
 
     def read_file(self, f: str):
         if f is None:
             return ""
-        elif f.name.endswith('pdf'):
+        elif f.name.endswith("pdf"):
             loader = UnstructuredPDFLoader(f.name)
             pages = loader.load_and_split()
             return "\n".join([p.page_content for p in pages])
-        elif f.name.endswith('tex'):
+        elif f.name.endswith("tex"):
             with open(f.name, "r") as f:
                 return f.read()
         else:
             return "Only support .tex & .pdf"
 
     def generate(self, txt: str, openai_key: str, progress=gr.Progress()):
-        
         if not openai_key:
             raise gr.Error("Please provide openai key !")
-        
+
         try:
             idea_list = self.analyze(txt, openai_key, progress)
             self.idea_list = idea_list
             k = min(len(idea_list), self.max_ideas)
 
             idea_buttons = [
-                gr.Button.update(visible=True, value=i['title'])
-                for e, i in enumerate(idea_list[:self.max_ideas])
+                gr.Button.update(visible=True, value=i["title"])
+                for e, i in enumerate(idea_list[: self.max_ideas])
             ]
-            idea_buttons += [
-                gr.Button.update(visible=False)
-            ] * (self.max_ideas - len(idea_buttons))
+            idea_buttons += [gr.Button.update(visible=False)] * (
+                self.max_ideas - len(idea_buttons)
+            )
 
             idea_details = [
                 gr.Textbox.update(value="", label="thought", visible=True),
                 gr.Textbox.update(value="", label="action", visible=True),
-                gr.Textbox.update(value="", label="original", visible=True, max_lines=5, lines=5),
-                gr.Textbox.update(value="", label="improved", visible=True, max_lines=5, lines=5),
+                gr.Textbox.update(
+                    value="", label="original", visible=True, max_lines=5, lines=5
+                ),
+                gr.Textbox.update(
+                    value="", label="improved", visible=True, max_lines=5, lines=5
+                ),
             ]
 
-            return [
-                gr.Textbox.update("Suggestions", interactive=False, show_label=False),
-                gr.Button.update(visible=True, value="Analyze")
-            ] + idea_details + idea_buttons
+            return (
+                [
+                    gr.Textbox.update(
+                        "Suggestions", interactive=False, show_label=False
+                    ),
+                    gr.Button.update(visible=True, value="Analyze"),
+                ]
+                + idea_details
+                + idea_buttons
+            )
         except Exception as e:
             raise gr.Error(str(e))
